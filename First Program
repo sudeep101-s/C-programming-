@@ -1,1 +1,753 @@
-hello
+import os
+import pickle
+from datetime import datetime
+
+# Task class represents a single to-do task
+class Task:
+    def __init__(self, title, description, due_date, priority, status="Pending"):
+        self.title = title
+        self.description = description
+        self.due_date = due_date
+        self.priority = priority
+        self.status = status
+        self.creation_date = datetime.now()
+
+    def mark_as_done(self):
+        self.status = "Completed"
+
+    def is_due(self):
+        return self.due_date < datetime.now()
+
+    def __str__(self):
+        return f"[{self.status}] {self.title} (Priority: {self.priority})\nDue: {self.due_date.strftime('%Y-%m-%d %H:%M:%S')}\nDescription: {self.description}"
+
+# TaskManager class handles multiple tasks
+class TaskManager:
+    def __init__(self):
+        self.tasks = []
+        self.load_data()
+
+    def add_task(self, title, description, due_date, priority):
+        task = Task(title, description, due_date, priority)
+        self.tasks.append(task)
+        self.save_data()
+
+    def remove_task(self, task_title):
+        self.tasks = [task for task in self.tasks if task.title != task_title]
+        self.save_data()
+
+    def mark_task_done(self, task_title):
+        task = self.get_task_by_title(task_title)
+        if task:
+            task.mark_as_done()
+            self.save_data()
+        else:
+            print("Task not found!")
+
+    def get_task_by_title(self, title):
+        return next((task for task in self.tasks if task.title == title), None)
+
+    def list_tasks(self, filter_status=None, sort_by_priority=False):
+        filtered_tasks = self.tasks
+        if filter_status:
+            filtered_tasks = [task for task in self.tasks if task.status == filter_status]
+
+        if sort_by_priority:
+            filtered_tasks = sorted(filtered_tasks, key=lambda x: x.priority)
+
+        if not filtered_tasks:
+            print("No tasks to display.")
+        else:
+            for task in filtered_tasks:
+                print(task)
+                print("=" * 40)
+
+    def save_data(self):
+        with open('tasks_data.pkl', 'wb') as file:
+            pickle.dump(self.tasks, file)
+
+    def load_data(self):
+        if os.path.exists('tasks_data.pkl'):
+            with open('tasks_data.pkl', 'rb') as file:
+                self.tasks = pickle.load(file)
+
+# Utility function to parse user input
+def parse_input_date(date_str):
+    try:
+        return datetime.strptime(date_str, "%Y-%m-%d %H:%M")
+    except ValueError:
+        print("Invalid date format. Please use YYYY-MM-DD HH:MM format.")
+        return None
+
+# Main Application
+def show_menu():
+    print("\nTo-Do List Application")
+    print("1. Add Task")
+    print("2. Remove Task")
+    print("3. Mark Task as Done")
+    print("4. List All Tasks")
+    print("5. List Pending Tasks")
+    print("6. List Completed Tasks")
+    print("7. Exit")
+
+def main():
+    task_manager = TaskManager()
+
+    while True:
+        show_menu()
+        choice = input("\nChoose an option: ")
+
+        if choice == "1":
+            title = input("Enter task title: ")
+            description = input("Enter task description: ")
+            due_date_str = input("Enter due date (YYYY-MM-DD HH:MM): ")
+            due_date = parse_input_date(due_date_str)
+            if due_date:
+                priority = input("Enter task priority (1-5): ")
+                try:
+                    priority = int(priority)
+                    if 1 <= priority <= 5:
+                        task_manager.add_task(title, description, due_date, priority)
+                    else:
+                        print("Priority must be between 1 and 5.")
+                except ValueError:
+                    print("Invalid priority value.")
+        elif choice == "2":
+            title = input("Enter the title of the task to remove: ")
+            task_manager.remove_task(title)
+        elif choice == "3":
+            title = input("Enter the title of the task to mark as done: ")
+            task_manager.mark_task_done(title)
+        elif choice == "4":
+            task_manager.list_tasks()
+        elif choice == "5":
+            task_manager.list_tasks(filter_status="Pending")
+        elif choice == "6":
+            task_manager.list_tasks(filter_status="Completed")
+        elif choice == "7":
+            print("Exiting the application.")
+            break
+        else:
+            print("Invalid option. Please choose again.")
+
+if __name__ == "__main__":
+    main()
+print("Hello World")
+num = int(input("Enter the value of num : "))
+pi = float(input("Enter the value of p i : "))
+name = str(input("Enter your name : "))
+compvalue=complex(input("Enter the complex value :"))
+boolean=bool(input("Enter the boolean value :"))
+nonetype=None
+#Print the values of variables
+print("\nEntered integer value is =",num)
+print("\nEntered pi value is =",pi)
+print("\nEntered name is =",name)
+print("\nEntered complex value is =",compvalue)
+print("\nEntered boolean value is =",boolean)
+print("\nNoneType value is =",nonetype)
+qty = float(input("Enter the quantity of item sold : "))
+val = float(input("Enter the value of item: "))
+discountpercent = float(input ("Enter the discount percentage : "))
+taxpercent = float (input ("Enter the tax : "))
+grossamt = qty*val
+discountamt = (discountpercent/100)*grossamt
+subtotal = grossamt-discountamt
+taxamt = (taxpercent/100)*subtotal
+netamt = subtotal + taxamt
+print("**********BILL************")
+print("Quantity sold : \t",qty)
+print("Price per item : \t",val)
+print("\n\t\t\t ----------")
+print("Gross Amount : \t\t" , grossamt)
+print("Discount :\t\t-", discountamt)
+print("\t\t\t ---------- ")
+print("Discounted Sub Total : \t " , subtotal)
+print("Tax :\t\t\t+",taxamt)
+print( " \t\t\t -----------")
+print("Total net amount to be paid ",netamt)
+import math
+a = float(input("Enter the coefficient a: "))
+b = float(input("Enter the coefficient b: "))
+c = float(input("Enter the coefficient c: "))
+discriminant = b*b - 4*a*c
+if a == 0:
+print("This is not a quadratic equation, 'a' should not be 0.")
+else:
+if discriminant > 0:
+root1 = (-b + math.sqrt(discriminant)) / (2 * a)
+root2 = (-b - math.sqrt(discriminant)) / (2 * a)
+print("The equation has real and distinct roots\n")
+print("Root 1=",root1)
+print("Root 2=",root2)
+elif discriminant == 0:
+root = -b / (2 * a)
+print("The equation has real and equal roots: ",root)
+else:
+real_part = -b / (2 * a)
+imaginary_part = math.sqrt(abs(discriminant)) / (2 * a)
+print("The equation has real and complex roots")
+print("Root1=",real_part,"+",imaginary_part,"i")
+print("Root2=",real_part,"-",imaginary_part,"i")
+n = int(input("Enter the number : "))
+s=0
+for i in range(1,n+1):
+if(i%2 == 0):
+term = i*i
+else:
+term=0
+s = s+term
+print ("The sum of squares of even number less than", n, "is", s)
+def add(x,y):
+return (lambda a,b:a+b) (x,y)
+num1=int(input("Enter first value"))
+num2=int(input("Enter second value"))
+sum=add(num1,num2)
+print("Result=",sum)
+def add(x, y):
+return x + y
+def sub(x, y):
+return x - y
+def mul(x, y):
+return x * y
+def div(x, y):
+return x/y
+Module B.py:
+from A import add, sub
+sum = add(3, 5)
+diff = sub(6, 4)
+print("Addition of two numbers:", sum)
+print("Difference of two numbers:", diff)
+message = "HelloWorld"
+index = 0
+while index < len(message) :
+letter = message[index]
+print(chr(ord(letter)+ 3),end=' ')
+index += 1
+username=input("Enter Name:")
+if username.isalpha()==False:
+print("Invalid Input")
+else:
+pan=input("Enter PAN:")
+if len(pan)==10 and pan[0:5].isalpha()==True and pan[5:9].isdigit()==True and pan[9].isalpha()==True:
+print("Name is ",username)
+print("PAN is ",pan)
+else:
+print("Invalid Input")
+file1 = open("/Users/DSU/python/file1.txt", "r")
+file2 = open("file2.txt", "w")
+num = 1
+for line in file1:
+file2.write(str(num) + ":" +line)
+num = num + 1
+file1.close()
+file2.close()
+print ("Contents read from file1.txt and copied to file2.txt")
+import random
+import time
+
+# 1. Basic Game Setup
+
+class Character:
+    def __init__(self, name, health, attack_power, defense_power):
+        self.name = name
+        self.health = health
+        self.attack_power = attack_power
+        self.defense_power = defense_power
+
+    def is_alive(self):
+        return self.health > 0
+
+    def take_damage(self, damage):
+        self.health -= damage
+        if self.health < 0:
+            self.health = 0
+
+    def attack(self, enemy):
+        damage = max(self.attack_power - enemy.defense_power, 0)
+        enemy.take_damage(damage)
+        return damage
+
+
+class Enemy:
+    def __init__(self, name, health, attack_power, defense_power):
+        self.name = name
+        self.health = health
+        self.attack_power = attack_power
+        self.defense_power = defense_power
+
+    def is_alive(self):
+        return self.health > 0
+
+    def take_damage(self, damage):
+        self.health -= damage
+        if self.health < 0:
+            self.health = 0
+
+    def attack(self, character):
+        damage = max(self.attack_power - character.defense_power, 0)
+        character.take_damage(damage)
+        return damage
+
+
+# 2. Game Mechanics
+
+def print_battle_status(player, enemy):
+    print(f"\n{player.name} Health: {player.health}")
+    print(f"{enemy.name} Health: {enemy.health}\n")
+
+
+def player_turn(player, enemy):
+    print("\nYour turn! Choose an action:")
+    print("1. Attack")
+    print("2. Heal")
+    choice = input("Choose (1 or 2): ")
+
+    if choice == "1":
+        damage = player.attack(enemy)
+        print(f"\nYou attack {enemy.name} for {damage} damage!")
+    elif choice == "2":
+        heal_amount = random.randint(10, 20)
+        player.health += heal_amount
+        print(f"\nYou heal yourself for {heal_amount} health!")
+    else:
+        print("\nInvalid choice, you do nothing.")
+
+
+def enemy_turn(player, enemy):
+    print(f"\n{enemy.name}'s turn!")
+    action = random.choice(["attack", "heal"])
+
+    if action == "attack":
+        damage = enemy.attack(player)
+        print(f"\n{enemy.name} attacks you for {damage} damage!")
+    elif action == "heal":
+        heal_amount = random.randint(10, 20)
+        enemy.health += heal_amount
+        print(f"\n{enemy.name} heals itself for {heal_amount} health!")
+
+
+def battle(player, enemy):
+    while player.is_alive() and enemy.is_alive():
+        print_battle_status(player, enemy)
+
+        player_turn(player, enemy)
+        if not enemy.is_alive():
+            print(f"\n{enemy.name} has been defeated!")
+            break
+
+        enemy_turn(player, enemy)
+        if not player.is_alive():
+            print(f"\nYou have been defeated by {enemy.name}!")
+            break
+
+        time.sleep(1)
+
+
+# 3. Exploring the Game World
+
+class Location:
+    def __init__(self, name, description):
+        self.name = name
+        self.description = description
+        self.connections = []
+
+    def connect(self, other_location):
+        self.connections.append(other_location)
+
+    def describe(self):
+        print(f"\nYou are at {self.name}.")
+        print(self.description)
+
+
+# 4. The Game Map
+
+forest = Location("Enchanted Forest", "A mystical forest filled with ancient trees and magical creatures.")
+village = Location("Old Village", "A small, quiet village with a few houses and shops.")
+cave = Location("Dark Cave", "A deep, dark cave where dangerous monsters lurk.")
+
+forest.connect(village)
+village.connect(cave)
+
+# 5. Main Game Loop
+
+def main():
+    print("Welcome to the Text-Based Adventure Game!")
+    name = input("Enter your character's name: ")
+    player = Character(name, 100, 20, 5)
+
+    print("\nChoose your starting location:")
+    print("1. Enchanted Forest")
+    print("2. Old Village")
+    print("3. Dark Cave")
+    choice = input("Choose (1, 2, or 3): ")
+
+    if choice == "1":
+        current_location = forest
+    elif choice == "2":
+        current_location = village
+    elif choice == "3":
+        current_location = cave
+    else:
+        print("\nInvalid choice, starting in the Enchanted Forest.")
+        current_location = forest
+
+    print(f"\nYou begin your adventure in {current_location.name}.\n")
+    current_location.describe()
+
+    # 6. Game Loop
+
+    while True:
+        print("\nWhat would you like to do?")
+        print("1. Explore")
+        print("2. Rest")
+        print("3. Quit")
+        action = input("Choose (1, 2, or 3): ")
+
+        if action == "1":
+            print(f"\nYou explore the {current_location.name}.")
+            # Encounter logic
+            if random.random() < 0.5:  # 50% chance to encounter an enemy
+                print("\nA wild enemy appears!")
+                enemy = Enemy("Goblin", 50, 15, 3)
+                battle(player, enemy)
+
+            # Chance to move to another location
+            if random.random() < 0.3:  # 30% chance to move
+                print("\nYou decide to move to a new location.")
+                next_location = random.choice(current_location.connections)
+                current_location = next_location
+                current_location.describe()
+
+        elif action == "2":
+            heal_amount = random.randint(10, 30)
+            player.health += heal_amount
+            print(f"\nYou rest and heal for {heal_amount} health!")
+
+        elif action == "3":
+            print("\nThanks for playing! Goodbye!")
+            break
+
+        else:
+            print("\nInvalid choice, try again.")
+
+        time.sleep(1)
+
+# 7. Running the Game
+
+if __name__ == "__main__":
+    main()
+    file1 = open("/Users/DSU/python/file1.txt", "r")
+file2 = open("file2.txt", "w")
+num = 1
+for line in file1:
+file2.write(str(num) + ":" +line)
+num = num + 1
+file1.close()
+file2.close()
+print ("Contents read from file1.txt and copied to file2.txt")
+import random
+import time
+
+# Character Classes
+class Character:
+    def __init__(self, name, health, attack, defense):
+        self.name = name
+        self.health = health
+        self.attack = attack
+        self.defense = defense
+        self.inventory = []
+
+    def take_damage(self, damage):
+        self.health -= damage
+        if self.health < 0:
+            self.health = 0
+
+    def heal(self, amount):
+        self.health += amount
+
+    def is_alive(self):
+        return self.health > 0
+
+    def attack_enemy(self, enemy):
+        damage = self.attack - enemy.defense
+        if damage < 0:
+            damage = 0
+        enemy.take_damage(damage)
+        return damage
+
+    def add_to_inventory(self, item):
+        self.inventory.append(item)
+
+    def __str__(self):
+        return f"{self.name}: Health = {self.health}, Attack = {self.attack}, Defense = {self.defense}"
+
+class Enemy:
+    def __init__(self, name, health, attack, defense):
+        self.name = name
+        self.health = health
+        self.attack = attack
+        self.defense = defense
+
+    def take_damage(self, damage):
+        self.health -= damage
+        if self.health < 0:
+            self.health = 0
+
+    def is_alive(self):
+        return self.health > 0
+
+    def attack_player(self, player):
+        damage = self.attack - player.defense
+        if damage < 0:
+            damage = 0
+        player.take_damage(damage)
+        return damage
+
+    def __str__(self):
+        return f"{self.name}: Health = {self.health}, Attack = {self.attack}, Defense = {self.defense}"
+
+# Item Class
+class Item:
+    def __init__(self, name, description, effect):
+        self.name = name
+        self.description = description
+        self.effect = effect
+
+    def use(self, character):
+        self.effect(character)
+        print(f"{character.name} used {self.name}!")
+
+    def __str__(self):
+        return f"{self.name}: {self.description}"
+
+# Sample items
+def heal_potion(character):
+    character.heal(20)
+
+def attack_boost(character):
+    character.attack += 5
+
+def defense_boost(character):
+    character.defense += 3
+
+# Game Logic
+class Game:
+    def __init__(self, player_name):
+        self.player = Character(player_name, 100, 15, 5)
+        self.enemies = [
+            Enemy("Goblin", 30, 10, 2),
+            Enemy("Orc", 60, 20, 5),
+            Enemy("Dragon", 150, 40, 10)
+        ]
+        self.items = [
+            Item("Healing Potion", "Restores 20 health.", heal_potion),
+            Item("Attack Boost", "Increases attack by 5.", attack_boost),
+            Item("Defense Boost", "Increases defense by 3.", defense_boost)
+        ]
+        self.current_enemy = None
+
+    def choose_action(self):
+        print("\nChoose an action:")
+        print("1. Attack")
+        print("2. Use Item")
+        print("3. Check Stats")
+        print("4. Flee")
+        action = input("Action: ")
+        return action
+
+    def battle(self):
+        print(f"\nA wild {self.current_enemy.name} has appeared!")
+        while self.player.is_alive() and self.current_enemy.is_alive():
+            action = self.choose_action()
+
+            if action == "1":
+                damage = self.player.attack_enemy(self.current_enemy)
+                print(f"You attack {self.current_enemy.name} for {damage} damage!")
+            elif action == "2":
+                self.use_item()
+            elif action == "3":
+                self.show_stats()
+            elif action == "4":
+                print("You fled the battle!")
+                break
+            else:
+                print("Invalid action. Please choose again.")
+                continue
+
+            if self.current_enemy.is_alive():
+                damage = self.current_enemy.attack_player(self.player)
+                print(f"{self.current_enemy.name} attacks you for {damage} damage!")
+
+            time.sleep(1)
+
+        if not self.player.is_alive():
+            print(f"\n{self.player.name} has been defeated!")
+        elif not self.current_enemy.is_alive():
+            print(f"\nYou have defeated the {self.current_enemy.name}!")
+
+    def use_item(self):
+        print("\nChoose an item to use:")
+        for idx, item in enumerate(self.items, 1):
+            print(f"{idx}. {item.name} - {item.description}")
+        choice = input("Select item: ")
+        if choice.isdigit() and 1 <= int(choice) <= len(self.items):
+            item = self.items[int(choice) - 1]
+            item.use(self.player)
+        else:
+            print("Invalid choice!")
+
+    def show_stats(self):
+        print(f"\n{self.player}")
+        print(f"Inventory: {[item.name for item in self.player.inventory]}")
+
+    def start(self):
+        while self.player.is_alive():
+            self.current_enemy = random.choice(self.enemies)
+            self.battle()
+
+        print("Game Over.")
+
+# Game initialization
+def main():
+    print("Welcome to the RPG Game!")
+    name = input("Enter your character's name: ")
+    game = Game(name)
+    game.start()
+
+if __name__ == "__main__":
+    main()
+  import os
+import pickle
+from datetime import datetime
+
+# Task class represents a single to-do task
+class Task:
+    def __init__(self, title, description, due_date, priority, status="Pending"):
+        self.title = title
+        self.description = description
+        self.due_date = due_date
+        self.priority = priority
+        self.status = status
+        self.creation_date = datetime.now()
+
+    def mark_as_done(self):
+        self.status = "Completed"
+
+    def is_due(self):
+        return self.due_date < datetime.now()
+
+    def __str__(self):
+        return f"[{self.status}] {self.title} (Priority: {self.priority})\nDue: {self.due_date.strftime('%Y-%m-%d %H:%M:%S')}\nDescription: {self.description}"
+
+# TaskManager class handles multiple tasks
+class TaskManager:
+    def __init__(self):
+        self.tasks = []
+        self.load_data()
+
+    def add_task(self, title, description, due_date, priority):
+        task = Task(title, description, due_date, priority)
+        self.tasks.append(task)
+        self.save_data()
+
+    def remove_task(self, task_title):
+        self.tasks = [task for task in self.tasks if task.title != task_title]
+        self.save_data()
+
+    def mark_task_done(self, task_title):
+        task = self.get_task_by_title(task_title)
+        if task:
+            task.mark_as_done()
+            self.save_data()
+        else:
+            print("Task not found!")
+
+    def get_task_by_title(self, title):
+        return next((task for task in self.tasks if task.title == title), None)
+
+    def list_tasks(self, filter_status=None, sort_by_priority=False):
+        filtered_tasks = self.tasks
+        if filter_status:
+            filtered_tasks = [task for task in self.tasks if task.status == filter_status]
+
+        if sort_by_priority:
+            filtered_tasks = sorted(filtered_tasks, key=lambda x: x.priority)
+
+        if not filtered_tasks:
+            print("No tasks to display.")
+        else:
+            for task in filtered_tasks:
+                print(task)
+                print("=" * 40)
+
+    def save_data(self):
+        with open('tasks_data.pkl', 'wb') as file:
+            pickle.dump(self.tasks, file)
+
+    def load_data(self):
+        if os.path.exists('tasks_data.pkl'):
+            with open('tasks_data.pkl', 'rb') as file:
+                self.tasks = pickle.load(file)
+
+# Utility function to parse user input
+def parse_input_date(date_str):
+    try:
+        return datetime.strptime(date_str, "%Y-%m-%d %H:%M")
+    except ValueError:
+        print("Invalid date format. Please use YYYY-MM-DD HH:MM format.")
+        return None
+
+# Main Application
+def show_menu():
+    print("\nTo-Do List Application")
+    print("1. Add Task")
+    print("2. Remove Task")
+    print("3. Mark Task as Done")
+    print("4. List All Tasks")
+    print("5. List Pending Tasks")
+    print("6. List Completed Tasks")
+    print("7. Exit")
+
+def main():
+    task_manager = TaskManager()
+
+    while True:
+        show_menu()
+        choice = input("\nChoose an option: ")
+
+        if choice == "1":
+            title = input("Enter task title: ")
+            description = input("Enter task description: ")
+            due_date_str = input("Enter due date (YYYY-MM-DD HH:MM): ")
+            due_date = parse_input_date(due_date_str)
+            if due_date:
+                priority = input("Enter task priority (1-5): ")
+                try:
+                    priority = int(priority)
+                    if 1 <= priority <= 5:
+                        task_manager.add_task(title, description, due_date, priority)
+                    else:
+                        print("Priority must be between 1 and 5.")
+                except ValueError:
+                    print("Invalid priority value.")
+        elif choice == "2":
+            title = input("Enter the title of the task to remove: ")
+            task_manager.remove_task(title)
+        elif choice == "3":
+            title = input("Enter the title of the task to mark as done: ")
+            task_manager.mark_task_done(title)
+        elif choice == "4":
+            task_manager.list_tasks()
+        elif choice == "5":
+            task_manager.list_tasks(filter_status="Pending")
+        elif choice == "6":
+            task_manager.list_tasks(filter_status="Completed")
+        elif choice == "7":
+            print("Exiting the application.")
+            break
+        else:
+            print("Invalid option. Please choose again.")
+
+if __name__ == "__main__":
+    main()
